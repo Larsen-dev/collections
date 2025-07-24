@@ -1,4 +1,4 @@
-# simpleStructures
+# collections
 This is a realisation of simple structures used in every programming language in Roblox Studio.
 There are two examples of code: .lua, .rbxm formats.
 
