@@ -131,10 +131,10 @@ function set._prototype:intersection<T>(s: set<T>): set<T>
 	}, set) :: set<T>
 
 	for n in self:iter() do
-    	if s:contains(n) then
-        	intersection:add(n)
+		if s:contains(n) then
+			intersection:add(n)
 		end
-    end
+	end
 
 	return intersection
 end
@@ -148,11 +148,13 @@ end
 function set._prototype:difference<T>(s: set<T>): set<T>
 	local difference = setmetatable({
 		_size = 0,
-		_elements = {}
+		_elements = {},
 	}, set) :: set<T>
 
 	for n, _ in self:iter() do
-		if s:contains(n) then continue end
+		if s:contains(n) then
+			continue
+		end
 		difference:add(n)
 	end
 
@@ -167,7 +169,7 @@ end
 function set._prototype:clone<T>(): set<T>
 	return setmetatable({
 		_size = self._size,
-		_elements = table.clone(self._elements)
+		_elements = table.clone(self._elements),
 	}, set) :: set<T>
 end
 
@@ -222,7 +224,7 @@ end
 function stack._prototype:pop<T>(): T?
 	local head = self._head
 	if not head then
-    	return nil
+		return nil
 	end
 
 	self._head = head._previous
@@ -301,11 +303,11 @@ function stack._prototype:clone<T>(): stack<T>
 	local values = {}
 
 	for _, value in self:iter() do
-    	values[#values + 1] = value
+		values[#values + 1] = value
 	end
 
 	for i = #values, 1, -1 do
-    	clone:push(values[i])
+		clone:push(values[i])
 	end
 
 	return clone
