@@ -24,7 +24,7 @@ type setPrototype<T> = {
 	clone: (self: set<T>) -> set<T>,
 }
 
-export type set<T> = setmetatable<setData<T>, { __index: setPrototype<T> }>
+export type set<T> = typeof(setmetatable({} :: setData<T>, { __index = {} :: setPrototype<T> }))
 
 --[=[
 	@param element T;
@@ -199,7 +199,7 @@ type stackPrototype<T> = {
 	clone: (self: stack<T>) -> stack<T>,
 }
 
-export type stack<T> = setmetatable<stackData<T>, { __index: stackPrototype<T> }>
+export type stack<T> = typeof(setmetatable({} :: stackData<T>, { __index = {} :: stackPrototype<T> }))
 
 --[=[
 	@param element T;
@@ -341,7 +341,7 @@ type queuePrototype<T> = {
 	clone: (self: queue<T>) -> queue<T>,
 }
 
-export type queue<T> = setmetatable<queueData<T>, { __index: queuePrototype<T> }>
+export type queue<T> = typeof(setmetatable({} :: queueData<T>, { __index = {} :: queuePrototype<T> }))
 
 --[=[
 	@param element T;
