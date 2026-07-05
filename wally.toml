@@ -2,7 +2,7 @@
 name = "larsen-dev/collections"
 description = "Simple collections module."
 keywords = ["generic", "typed", "fast", "performance", "efficient"]
-version = "0.1.2"
+version = "1.0.0"
 license = "MIT"
 authors = ["Larsen-dev"]
 registry = "https://github.com/UpliftGames/wally-index"
