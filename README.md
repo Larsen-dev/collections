@@ -9,7 +9,7 @@ Simple collections module. Full generic-typed and based on linked list. All stru
 ## Installation
 
 ```toml
-collections = "larsen-dev/collections@1.0.0"
+collections = "larsen-dev/collections@1.1.0"
 ```
 
 Or using .rbxm package from Releases page

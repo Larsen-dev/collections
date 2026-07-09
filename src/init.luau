@@ -374,15 +374,19 @@ end
 ]=]
 function queue._prototype:dequeue<T>(): T?
 	local tail = self._tail
-	local head = self._head
 	if not tail then
-		return
+		return nil
 	end
 
-	self._tail = tail._previous
-	if tail == head then
+	local newTail = tail._next
+	self._tail = newTail
+
+	if newTail then
+		newTail._previous = nil
+	else
 		self._head = nil
 	end
+
 	self._size -= 1
 
 	return tail._element
