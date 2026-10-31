@@ -1,16 +1,12 @@
 --!strict
 
 -- Set
-local set = {}
-set._prototype = {}
-set.__index = set._prototype
-
 type setData<T> = {
 	_size: number,
 	_elements: { [T]: true },
 }
 
-type setPrototype<T> = {
+type setPrototype<T = any> = {
 	add: (self: set<T>, element: T) -> (),
 	remove: (self: set<T>, element: T) -> (),
 	contains: (self: set<T>, element: T) -> boolean,
@@ -24,7 +20,12 @@ type setPrototype<T> = {
 	clone: (self: set<T>) -> set<T>,
 }
 
-export type set<T> = typeof(setmetatable({} :: setData<T>, { __index = {} :: setPrototype<T> }))
+export type set<T = any> = setmetatable<setData<T>, { __index: setPrototype<T> }>
+
+local set = {}
+set._prototype = {} :: setPrototype<>
+set.__index = set._prototype
+set.__metatable = "You're not permitted to get this metatable"
 
 --[=[
 	@param element T;
@@ -173,11 +174,23 @@ function set._prototype:clone<T>(): set<T>
 	}, set) :: set<T>
 end
 
--- Stack
-local stack = {}
-stack._prototype = {}
-stack.__index = stack._prototype
+setmetatable(set._prototype, {
+	__index = function(_, key)
+		if key ~= "_head" then
+			error(string.format("%s is not a valid member of set._prototype", tostring(key)))
+		end
+	end,
 
+	__newindex = function(_, key)
+		if key ~= "_head" then
+			error(string.format("%s is not a valid member of set._prototype", tostring(key)))
+		end
+	end,
+
+	__metatable = "You're not permitted to get this metatable"
+})
+
+-- Stack
 type stackNode<T> = {
 	_element: T,
 	_previous: stackNode<T>?,
@@ -188,7 +201,7 @@ type stackData<T> = {
 	_head: stackNode<T>?,
 }
 
-type stackPrototype<T> = {
+type stackPrototype<T = any> = {
 	push: (self: stack<T>, element: T) -> (),
 	pop: (self: stack<T>) -> T?,
 	peek: (self: stack<T>) -> T?,
@@ -199,7 +212,12 @@ type stackPrototype<T> = {
 	clone: (self: stack<T>) -> stack<T>,
 }
 
-export type stack<T> = typeof(setmetatable({} :: stackData<T>, { __index = {} :: stackPrototype<T> }))
+export type stack<T = any> = setmetatable<stackData<T>, { __index: stackPrototype<T> }>
+
+local stack = {}
+stack._prototype = {} :: stackPrototype<>
+stack.__index = stack._prototype
+stack.__metatable = "You're not permitted to get this metatable"
 
 --[=[
 	@param element T;
@@ -277,7 +295,7 @@ local function stackIterator<T>(s: stack<T>, node: stackNode<T>?): (stackNode<T>
 		return node, node._element
 	end
 
-	return nil
+	return nil, nil
 end
 
 --[=[
@@ -313,24 +331,32 @@ function stack._prototype:clone<T>(): stack<T>
 	return clone
 end
 
--- Queue
-local queue = {}
-queue._prototype = {}
-queue.__index = queue._prototype
+setmetatable(stack._prototype, {
+	__index = function(_, key)
+		error(string.format("%s is not a valid member of stack._prototype", tostring(key)))
+	end,
 
+	__newindex = function(_, key)
+		error(string.format("%s is not a valid member of stack._prototype", tostring(key)))
+	end,
+
+	__metatable = "You're not permitted to get this metatable"
+})
+
+-- Queue
 type queueNode<T> = {
 	_element: T,
 	_next: queueNode<T>?,
 	_previous: queueNode<T>?,
 }
 
-type queueData<T> = {
+type queueData<T = any> = {
 	_size: number,
 	_tail: queueNode<T>?,
 	_head: queueNode<T>?,
 }
 
-type queuePrototype<T> = {
+type queuePrototype<T = any> = {
 	enqueue: (self: queue<T>, element: T) -> (),
 	dequeue: (self: queue<T>) -> T?,
 	peek: (self: queue<T>) -> T?,
@@ -341,7 +367,12 @@ type queuePrototype<T> = {
 	clone: (self: queue<T>) -> queue<T>,
 }
 
-export type queue<T> = typeof(setmetatable({} :: queueData<T>, { __index = {} :: queuePrototype<T> }))
+export type queue<T = any> = setmetatable<queueData<T>, { __index: queuePrototype<T> }>
+
+local queue = {}
+queue._prototype = {} :: queuePrototype<>
+queue.__index = queue._prototype
+queue.__metatable = "You're not permitted to get this metatable"
 
 --[=[
 	@param element T;
@@ -437,7 +468,7 @@ local function queueIterator<T>(q: queue<T>, node: queueNode<T>?): (queueNode<T>
 		return node, node._element
 	end
 
-	return nil
+	return nil, nil
 end
 
 --[=[
@@ -468,16 +499,32 @@ function queue._prototype:clone<T>(): queue<T>
 	return clone
 end
 
+setmetatable(queue._prototype, {
+	__index = function(_, key)
+		if key ~= "_head" and key ~= "_tail" then
+			error(string.format("%s is not a valid member of queue._prototype", tostring(key)))
+		end
+	end,
+
+	__newindex = function(_, key)
+		if key ~= "_head" and key ~= "_tail" then
+			error(string.format("%s is not a valid member of queue._prototype", tostring(key)))
+		end
+	end,
+
+	__metatable = "You're not permitted to get this metatable"
+})
+
 return table.freeze({
-	newSet = function<T>(): set<T>
-		return setmetatable({ _size = 0, _elements = {} }, set) :: set<T>
+	newSet = function(): set<>
+		return setmetatable({ _size = 0, _elements = {} }, set) :: set<>
 	end,
 
-	newStack = function<T>(): stack<T>
-		return setmetatable({ _size = 0, _head = nil }, stack) :: stack<T>
+	newStack = function(): stack<>
+		return setmetatable({ _size = 0, _head = nil }, stack) :: stack<>
 	end,
 
-	newQueue = function<T>(): queue<T>
-		return setmetatable({ _size = 0, _head = nil, _tail = nil }, queue) :: queue<T>
+	newQueue = function(): queue<>
+		return setmetatable({ _size = 0, _head = nil, _tail = nil }, queue) :: queue<>
 	end,
 })
